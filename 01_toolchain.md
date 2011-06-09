@@ -71,6 +71,7 @@ Can maintain multiple sets of gems for different apps on same machine
 
 # `rails s[erver]`
 
+<!-- put this after next 2 slides, with git init -->
 # SSH Key Setup (Linux)
 
 Be sure you have the open-ssh package installed. Check with:
