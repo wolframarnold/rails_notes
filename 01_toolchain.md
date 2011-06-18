@@ -5,6 +5,10 @@ pre, pre.sh_sourceCode { background-color: #e5e5ef; border: 1px solid #999; }
 
 Ready...?
 
+!SLIDE subsection
+
+# Ruby-on-Rails Toolchain
+
 # Why Git?
 
 * Most Ruby and Rails developers use git
@@ -71,7 +75,6 @@ Can maintain multiple sets of gems for different apps on same machine
 
 # `rails s[erver]`
 
-<!-- put this after next 2 slides, with git init -->
 # SSH Key Setup (Linux)
 
 Be sure you have the open-ssh package installed. Check with:

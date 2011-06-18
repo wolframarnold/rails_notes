@@ -1,3 +1,7 @@
+!SLIDE subsection
+
+# Ruby-on-Rails
+
 !SLIDE
 
 ## MVC
@@ -239,7 +243,7 @@ The `~>` syntax for specifying versions mean that bundler will tolerate minor re
 
 
 # CRUD Exercise
-<!-- this should go into a 'learn_rails' project for TFT -->
+
 ## Class Methods
 
 * new
@@ -435,138 +439,6 @@ If you're using RubyMine, open your `.gitignore` file and add a line with `.idea
     git add .
     git commit -m "First commit, RSpec installed"
 
-
-# Add Static Pages
-
-See RailsTutorial, page 86
-
-    rails generate controller Pages home contact about
-
-Note the new controller file `pages_controller.rb`, the view templates for `pages` and the changes to `config/routes.rb`
- 
-# Adding content
-
-For `app/views/pages/home.html.erb`
-
-<http://ruby.railstutorial.org/chapters/static-pages#code:home_view_full_html>
-
-
-For `app/views/pages/contact.html.erb`
-
-<http://ruby.railstutorial.org/chapters/static-pages#code:contact_view_full_html>
-
-For `app/views/pages/about.html.erb`
-
-<http://ruby.railstutorial.org/chapters/static-pages#code:about_view_full_html>
-
-# Setting Instance Variables in the Controller
-
-    class PagesController < ApplicationController
-      def home
-        @title = "Home"
-      end
-
-      def contact
-        @title = "Contact"
-      end
-
-      def about
-        @title = "About"
-      end
-    end
-
-<http://ruby.railstutorial.org/chapters/static-pages#code:pages_controller_with_title>
-
-# Use them
-
-## Replace the hard-coded strings "About" and "Contact" in the views with instance variables
-
-(You may also want to add a `home` view template.)
-
-# DRY things up with layouts
-
-* Remove the repetitive parts of the about us and contact us templates
-* Put them into a layout file which will call `yield` to insert the template
-
-# Exercise
-
-* Add a `home` and a `help` pages
-* What files do you need to add?
-* What additional declarations do you need to make?
-* Try out things and see if the Rails error messages are helpful in guiding you.
-
-# Exercise
-
-* What is a new developer adds a new action, but forgets to set the `@title` variable?
-* Or sometimes, we're happy with a generic title, and don't want to set it.
-* Instead of using `@title` in the layout, define a `title` helper method in `application_helper.rb` that uses @title if defined, or sets a fallback string if not.
-
-# Stylin'
-
-Download: <http://github.com/joshuaclayton/blueprint-css/zipball/master>
-
-Extract the `blueprint` subdirectory to `public/stylesheets`
-
-And add stylesheet links to layout file:
-
-    <%= stylesheet_link_tag 'blueprint/screen', :media => 'screen' %>
-    <%= stylesheet_link_tag 'blueprint/print',  :media => 'print' %>
-
-<http://ruby.railstutorial.org/chapters/rails-flavored-ruby#code:layout_with_stylesheets>
-
-# Navigation
-
-Add some styling and navigation links to the layout
-
-<http://ruby.railstutorial.org/chapters/filling-in-the-layout#code:layout_new_structure>
-
-Download the logo to `public/images`
-
-<http://railstutorial.org/images/sample_app/logo.png>
-
-# More CSS
-
-Add a file `public/stylesheets/custom.css` from:
-
-<http://ruby.railstutorial.org/chapters/filling-in-the-layout#code:header_content>
-
-And append to it:
-
-<http://ruby.railstutorial.org/chapters/filling-in-the-layout#code:navigation_css>
-
-As well as:
-
-<http://ruby.railstutorial.org/chapters/filling-in-the-layout#code:signup_css>
-
-And for rounded corners:
-
-<http://ruby.railstutorial.org/chapters/filling-in-the-layout#code:round_css>
-
-And for the footer:
-
-<http://ruby.railstutorial.org/chapters/filling-in-the-layout#code:footer_css>
-
-# Use partials to de-clutter the layout
-
-Create a stylesheets partial: `app/views/layouts/_stylesheets.html.erb`
-
-<http://ruby.railstutorial.org/chapters/filling-in-the-layout#code:stylesheets_partial>
-
-Create a header partial: `app/views/layouts/_header.html.erb`
-
-<http://ruby.railstutorial.org/chapters/filling-in-the-layout#code:header_partial>
-
-Create a footer partial: `app/views/layouts/_footer.html.erb`
-
-<http://ruby.railstutorial.org/chapters/filling-in-the-layout#code:footer_partial>
-
-Refactored layout:
-
-<http://ruby.railstutorial.org/chapters/filling-in-the-layout#code:layout_with_partials>
-
-**Note:** File names for partials start with an underscore `_` but when referred to in the `render` command, they
-don't have the underscore!
-
 # Named routes
 
 The generator created entries in `config/routes` like so:
@@ -586,10 +458,63 @@ You can verify this by running
 
     rake routes
 
-# Exercise
+# Rails Tutorial Sample App
 
-## Replace the HTML hand-coded links in the `_header` `_footer` and footer partials with the named route methods.
+<https://github.com/wolframarnold/rails_tutorial>
 
-# Exercise
+## Through chapter 11, minus a few things
+## Uses Devise as authentication mechanism
 
-## Replace the local variable logo in the header partial with a helper method of the same name.
+
+    git clone https://github.com/wolframarnold/rails_tutorial.git
+    bundle install
+    rake db:migrate
+    rake db:populate  # (optional), created dummy data
+
+
+# Exercises
+
+* Add a ProfilesController#index page -- to list all users (Chapter 10.3)
+* Add a flag to distinguish an admin user (Chapter 10.4)
+* Give the admin user permission to delete non-admin users (Chapter 10.4)
+* Prevent the admin user from deleting themselves
+* Add a proto feed on the home page (Chapter 11.3.3)
+
+# Scopes
+
+## Named queries
+
+    @@@ruby
+    class ShippingAddress < ActiveRecord::Base
+
+      has_many :orders
+
+      scope :us, where(:country => "US")
+      scope :in_state, lambda {|st| where(:state => st) }
+
+      scope :on_file, lambda { includes(:orders).order('orders.created_at DESC').where('orders.created_at > ?', 12.months.ago) }
+    end
+
+# Many-to-many relationships
+
+    @@@ruby
+    class Product
+      has_many :order_line_items
+    end
+
+    class OrderLineItem
+      belongs_to :product
+      belongs_to :user
+    end
+
+    class User
+      has_many :order_line_items
+      has_many :products, :through => :order_line_items
+    end
+
+# Exercises
+
+* Add the friending feature (Chapter 12)
+  * Add a many-to-many relationship between users and users (followers and users being followed) (Chapter 12.1)
+  * Add a UI (Chapter 12.2)
+  * Add a status feed of all the followed users to a given user's home page. Start with the model relationship. (Chapter 12.3)
