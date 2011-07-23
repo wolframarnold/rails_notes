@@ -14,9 +14,9 @@
 * <http://guides.rubyonrails.org/>
 * <http://railsapi.com/>
 
-## Chicago Resources
+## San Francisco Bay Area Resources
 
-* <http://windycityrails.org/> Sept 17, 2011
-* <http://chicagoruby.org/>
-* <http://www.meetup.com/ChicagoRuby/>
+* <http://www.meetup.com/sfruby/>
+* <http://www.meetup.com/ebruby/>
+* <http://www.meetup.com/svruby/>
 

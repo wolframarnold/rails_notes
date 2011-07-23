@@ -21,6 +21,8 @@ Create `.gitignore` file
 
 # Deploy
 
+    gem install heroku
+
     heroku create
 
     git push heroku master
@@ -167,7 +169,7 @@ Behind the veil of magic: `method_missing`
 
     @@@ruby
     class User < ActiveRecord::Base
-        validates :name, :email
+        validates :name, :email,
                   :presence => true,
                   :length   => {:maximum => 256}
 
@@ -361,10 +363,206 @@ Create a new file in your Rails directory tree: `spec/models/user_validations_sp
 
     end
 
+# Onto a Real (Real) App
+
+Rails Tutorial Chapter 3 (page 78ff)
+
+     rails new sample_app -T
+
+-T causes the rails generator to skip the default test unit directories. We'll be using RSpec instead
+
+# Be a good citizen
+
+## ...and put something useful into the README file.
+
+Live Long and Prosper!
+
+# Commit
+
+It's a good time to commit now.
+
+If you're using RubyMine, open your `.gitignore` file and add a line with `.idea/` to it. This excludes RubyMine configuration files from being tracked.
+
+    git add .
+    git commit -m "First commit, RSpec installed"
+
+
+!SLIDE subsection
+
+# Test-First Teaching in Rails
+
+## Add the `rails_tft` gem to your `Gemfile`
+
+Add to your `Gemfile`
+
+    gem "tft_rails"
+
+Then run
+
+    bundle install
+
+# TFT Generators
+
+    rails g  # see all generators
+
+## Add tests (i.e. student assignments) to the project
+
+    rails g chapter07:begin
+
+## View generated instructions file
+
+## Then add code to make them pass
+
+    rake spec   # should be all green
+
+## Skip ahead/stuck?
+
+    rails g chapter07:solutions
+
+# Many new concepts
+
+* Not all covered by lecture
+* Check generated instructions file
+* Tips <http://ruby.railstutorial.org/ruby-on-rails-tutorial-book>
+* Rails reference: <http://railsapi.com/>
+
+# Why starting at Chapter 07?
+
+* RailsTutorial adpated for Devise gem
+* Industry-standard authentication solution
+* Gives us more time to get to the good bits
+* Don't build your auth system by hand
+
+(unless you're a security expert)
+
+# Chapter 7
+
+# Exercises: user_spec
+
+* Check for method present
+* How does ActiveRecord know that there is a name method?
+* No such method is defined anywhere???
+
+# Exercises
+
+* pages_controller_spec
+* user_spec
+* users_controller_spec (show action plus view)
+
+# Named routes
+
+The generator created entries in `config/routes` like so:
+
+    get "pages/contact"
+
+If you switch this to...
+
+    match '/about', :to => 'pages#about'
+
+...you'll get so-called "named routes" with methods:
+
+    about_path  # relative url (without hostname)
+    about_url   # absolute url (with hostname and protocol)
+
+You can verify this by running
+
+    rake routes
+
+# Chapter 08, 09
+
+* Sign up and sign in
+
+# Test Data
+
+## Define the factory
+
+    Factory.define(:user) do |f|
+      f.name "Joe"
+      f.email "joe@example.com"
+    end
+
+## to produce users
+
+    Factory(:user)  # =>  User record with name=="Joe", ...
+
+&nbsp;
+* Factory data is for testing
+* Permits quick creation of a few records
+
+# Chapter 10 Exercises
+
+Note: A new rake task `rake db:populate` was added to create dummy data for development
+
+* Add an `index` action to `UsersController`, to view all users
+  * Add pagination to the `index` view (Chapter 10.3.3, 10.3.4)
+* Admin Privileges (Chapter 10.4)
+  * Admin flag
+  * Only admins can destroy users
+  * Only admins see destroy link
+
+(Add tests to check that the delete links in Listing 10.38 appear for admins but not for normal users.)
+(Modify the db:populate task such that at least one user has admin privileges)
+
+Note: Devise provides a controller method authentication_user!
+
+Also available: generate dummy data
+
+    rake db:populate
+
+# Protecting attributes
+
+## `attr_accessible`
+
+* Whitelist of attributes that are mass-assignable, i.e.
+
+    User.create!(:name => "Joe", :email => "joe@example.com")
+
+&nbsp;
+* Don't make privileged data mass-assignable!
+
+# Form posts
+
+
+    @@@ruby
+
+    @@@ruby
+    class UsersController < ApplicationController
+
+       def create
+         @user = User.create(params[:user])
+         ...
+       end
+    ...
+    end
+
+# The `params` hash
+
+* Form posts
+  * Attributes with `name[...]` will turn into has keys
+* Url components, as defined by routes
+  * `match "/about/:page" => ...
+  * produces a `:page` entry in `params`
+
+# Migrations
+
+* start with a generator
+  * `rails g migration MODEL field:type field:type`
+* add indexes by hand
+
+# Access Control
+
+## View
+
+* Don't show a privileged link to non-privileged users
+
+## Controller
+
+* Check for privilege on destructive operation
+* Protect against form spoofing
 
 # Microposts
 
-    rails generate scaffold Micropost content:string user_id:integer
+    rails generate model Micropost content:string user_id:integer
 
     rake db:migrate
 
@@ -390,7 +588,7 @@ Create a new file in your Rails directory tree: `spec/models/user_validations_sp
 
     class Micropost < ActiveRecord::Base
       belongs_to :user
-      
+
       validates :content, :length => { :maximum => 140 }
     end
 
@@ -404,7 +602,7 @@ Create a new file in your Rails directory tree: `spec/models/user_validations_sp
 
     > u = User.find(1)
     > u.microposts.create(:content => "Hello World")
-    
+
 # Deploy
 
     # create .gitignore file
@@ -415,70 +613,6 @@ Create a new file in your Rails directory tree: `spec/models/user_validations_sp
     heroku create
     git push heroku master
     heroku rake db:migrate
-
-# Onto a Real (Real) App
-
-Rails Tutorial Chapter 3 (page 78ff)
-
-     rails new sample_app -T
-
--T causes the rails generator to skip the default test unit directories. We'll be using RSpec instead
-
-# Be a good citizen
-
-## ...and put something useful into the README file.
-
-Live Long and Prosper!
-
-# Commit
-
-It's a good time to commit now.
-
-If you're using RubyMine, open your `.gitignore` file and add a line with `.idea/` to it. This excludes RubyMine configuration files from being tracked.
-
-    git add .
-    git commit -m "First commit, RSpec installed"
-
-# Named routes
-
-The generator created entries in `config/routes` like so:
-
-    get "pages/contact"
-
-If you switch this to...
-
-    match '/about', :to => 'pages#about'
-
-...you'll get so-called "named routes" with methods:
-
-    about_path  # relative url (without hostname)
-    about_url   # absolute url (with hostname and protocol)
-
-You can verify this by running
-
-    rake routes
-
-# Rails Tutorial Sample App
-
-<https://github.com/wolframarnold/rails_tutorial>
-
-## Through chapter 11, minus a few things
-## Uses Devise as authentication mechanism
-
-
-    git clone https://github.com/wolframarnold/rails_tutorial.git
-    bundle install
-    rake db:migrate
-    rake db:populate  # (optional), created dummy data
-
-
-# Exercises
-
-* Add a ProfilesController#index page -- to list all users (Chapter 10.3)
-* Add a flag to distinguish an admin user (Chapter 10.4)
-* Give the admin user permission to delete non-admin users (Chapter 10.4)
-* Prevent the admin user from deleting themselves
-* Add a proto feed on the home page (Chapter 11.3.3)
 
 # Scopes
 
@@ -512,9 +646,75 @@ You can verify this by running
       has_many :products, :through => :order_line_items
     end
 
-# Exercises
+# TFT Gem update
 
-* Add the friending feature (Chapter 12)
-  * Add a many-to-many relationship between users and users (followers and users being followed) (Chapter 12.1)
-  * Add a UI (Chapter 12.2)
-  * Add a status feed of all the followed users to a given user's home page. Start with the model relationship. (Chapter 12.3)
+    bundle update tft_rails
+
+# Chapter 11.1
+
+* Micropost model
+* Association to User model
+
+# Chapter 11.2
+
+* MicropostsContoller
+
+# Chapter 11.3
+
+* Proto feed of user's posts on the home page
+
+# Testing for instance variables in a controller spec
+
+    # spec fils:
+
+    it "has a variable x" do
+      get :action
+      assigns[:x].should_not be_nil  # accesses @x in controller
+    end
+
+    # Controller:
+
+    def action
+      @x = ...
+    end
+
+# Time helpers
+
+    1.day.ago
+    2.weeks.since
+
+    time_ago_in_words(Time.now)
+    time_ago_in_words(1.day.ago)
+
+# Rendering by object collection
+
+In views:
+
+    # show.html.erb
+
+    <% @users.each do |u| %>
+      <%= u.name %>
+      ...
+    <% end %>
+
+# Move it to a partial by the same name
+
+    # show.html.erb
+    <%= render @users %>
+
+    # _user.html.erb  (singular!)
+    <% user.name %>
+
+.
+
+* Automatic loop
+
+# Finders
+
+    User.find(4)   # raises exception if not found
+
+    User.find_by_id(4)  # return nil
+
+    # also:
+
+    User.find_by_name("Joe")

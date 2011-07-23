@@ -1,10 +1,3 @@
-<script src="file/shrink.js" />
-<style>
-pre, pre.sh_sourceCode { background-color: #e5e5ef; border: 1px solid #999; }
-</style>
-
-Ready...?
-
 !SLIDE subsection
 
 # Ruby-on-Rails Toolchain
@@ -50,12 +43,21 @@ Gems in different sets don't interfere with each other
 Can maintain multiple sets of gems for different apps on same machine
 
 
+    rvm use 1.9.2
 
     rvm gemset create rails3
 
     rvm gemset list_all
 
     rvm use 1.9.2@rails3
+
+# RubyMine
+
+* Commercial IDE
+* Well integrated with open source tools
+* Best of breed
+
+## http://www.jetbrains.com/ruby/
 
 
 # Ready, set, go...
